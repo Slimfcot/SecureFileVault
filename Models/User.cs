@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SecureFileVault.Models
@@ -20,8 +21,8 @@ namespace SecureFileVault.Models
         public string PasswordHash { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public List<VaultFile> VaultFiles { get; set; } = new();
+        public List<AuditLog> AuditLogs { get; set; } = new();
     }
 }
-
-
-//Testing commits

@@ -14,16 +14,22 @@ namespace SecureFileVault
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            string email = EmailTextBox.Text.Trim();
+            string email = EmailTextBox.Text;
             string password = PasswordBox.Password;
 
-            bool success = _authService.Login(email, password, out string message);
+            var user = _authService.Login(email, password, out string message);
+
+            if (user == null)
+            {
+                MessageBox.Show(message);
+                return;
+            }
+
             MessageBox.Show(message);
 
-            if (success)
-            {
-                MessageBox.Show("Dashboard will be added next.");
-            }
+            var dashboard = new DashboardWindow(user);
+            dashboard.Show();
+            Close();
         }
 
         private void OpenSignUpButton_Click(object sender, RoutedEventArgs e)
