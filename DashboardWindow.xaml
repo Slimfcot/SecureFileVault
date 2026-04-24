@@ -1,0 +1,65 @@
+﻿<Window x:Class="SecureFileVault.DashboardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Secure File Vault - Dashboard"
+        Height="500"
+        Width="900"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F7FB">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+            <TextBlock Text="Welcome, "
+                       FontSize="22"
+                       FontWeight="Bold"/>
+            <TextBlock x:Name="UsernameTextBlock"
+                       FontSize="22"
+                       FontWeight="Bold"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+            <Button Content="Upload File"
+                    Width="120"
+                    Height="35"
+                    Margin="0,0,10,0"
+                    Click="UploadFileButton_Click"/>
+            <Button Content="Refresh"
+                    Width="100"
+                    Height="35"
+                    Click="RefreshButton_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="FilesDataGrid"
+                  Grid.Row="2"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="File Name" Binding="{Binding OriginalFileName}" Width="*"/>
+                <DataGridTextColumn Header="Extension" Binding="{Binding FileExtension}" Width="120"/>
+                <DataGridTextColumn Header="Size (bytes)" Binding="{Binding FileSize}" Width="140"/>
+                <DataGridTextColumn Header="Uploaded At" Binding="{Binding UploadedAt}" Width="180"/>
+
+                <DataGridTemplateColumn Header="Actions" Width="200">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Download"
+                                        Margin="0,0,5,0"
+                                        Click="DownloadFileButton_Click"/>
+                                <Button Content="Delete"
+                                        Click="DeleteFileButton_Click"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
