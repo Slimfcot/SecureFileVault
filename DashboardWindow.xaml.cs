@@ -134,7 +134,20 @@ namespace SecureFileVault
                 db.SaveChanges();
             }
 
-            LoadFiles();
+             LoadFiles();
+        }
+
+            private void AuditLogsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var logsWindow = new AuditLogsWindow();
+            logsWindow.ShowDialog();
+        }
+        
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            var loginWindow = new LoginWindow();
+            loginWindow.Show();
+            Close();
         }
     }
 }

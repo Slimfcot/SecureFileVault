@@ -28,10 +28,23 @@
                     Height="35"
                     Margin="0,0,10,0"
                     Click="UploadFileButton_Click"/>
+            
             <Button Content="Refresh"
                     Width="100"
                     Height="35"
                     Click="RefreshButton_Click"/>
+
+            <Button Content="Logout"
+                    Width="100"
+                    Height="35"
+                    Margin="10,0,0,0"
+                    Click="LogoutButton_Click"/>
+
+            <Button Content="Audit Logs"
+                    Width="120"
+                    Height="35"
+                    Margin="10,0,0,0"
+                    Click="AuditLogsButton_Click"/>
         </StackPanel>
 
         <DataGrid x:Name="FilesDataGrid"
