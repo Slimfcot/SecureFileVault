@@ -76,7 +76,16 @@ namespace SecureFileVault
             {
                 try
                 {
-                    File.Copy(selectedFile.EncryptedPath, saveDialog.FileName, overwrite: true);
+                    var encryptionService = new EncryptionService();
+
+                    byte[] key = encryptionService.GenerateKey("demo-key");
+                    byte[] iv = encryptionService.GenerateIV();
+
+                    encryptionService.DecryptFile(
+                    selectedFile.EncryptedPath,
+                    saveDialog.FileName,
+                    key,
+                    iv);
                     MessageBox.Show("File downloaded successfully.", "Success",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
