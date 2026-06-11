@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.Linq;
 using System.IO;
 using System.Windows;
@@ -27,6 +28,11 @@ namespace SecureFileVault
                 .ToList();
 
             FilesDataGrid.ItemsSource = files;
+
+            if (FileCountTextBlock != null)
+            {
+                FileCountTextBlock.Text = $"Files Stored: {files.Count}";
+            }
         }
 
         private void UploadFileButton_Click(object sender, RoutedEventArgs e)
@@ -43,7 +49,10 @@ namespace SecureFileVault
                     openFileDialog.FileName,
                     out string message);
 
-                MessageBox.Show(message, "Upload", MessageBoxButton.OK,
+                MessageBox.Show(
+                    message,
+                    "Upload",
+                    MessageBoxButton.OK,
                     success ? MessageBoxImage.Information : MessageBoxImage.Error);
 
                 if (success)
@@ -62,8 +71,11 @@ namespace SecureFileVault
         {
             if (FilesDataGrid.SelectedItem is not VaultFile selectedFile)
             {
-                MessageBox.Show("Please select a file.", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Please select a file.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
@@ -82,17 +94,37 @@ namespace SecureFileVault
                     byte[] iv = encryptionService.GenerateIV();
 
                     encryptionService.DecryptFile(
-                    selectedFile.EncryptedPath,
-                    saveDialog.FileName,
-                    key,
-                    iv);
-                    MessageBox.Show("File downloaded successfully.", "Success",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                        selectedFile.EncryptedPath,
+                        saveDialog.FileName,
+                        key,
+                        iv);
+
+                    using var db = new Data.AppDbContext();
+
+                    db.AuditLogs.Add(new AuditLog
+                    {
+                        UserId = _currentUser.UserId,
+                        FileId = selectedFile.FileId,
+                        ActionType = "Download",
+                        Details = $"Downloaded file: {selectedFile.OriginalFileName}",
+                        Timestamp = DateTime.UtcNow
+                    });
+
+                    db.SaveChanges();
+
+                    MessageBox.Show(
+                        "File downloaded successfully.",
+                        "Success",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Download failed: {ex.Message}", "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(
+                        $"Download failed: {ex.Message}",
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
         }
@@ -101,8 +133,11 @@ namespace SecureFileVault
         {
             if (FilesDataGrid.SelectedItem is not VaultFile selectedFile)
             {
-                MessageBox.Show("Please select a file.", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Please select a file.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
@@ -117,7 +152,8 @@ namespace SecureFileVault
 
             using var db = new Data.AppDbContext();
 
-            var file = db.VaultFiles.FirstOrDefault(f => f.FileId == selectedFile.FileId);
+            var file = db.VaultFiles.FirstOrDefault(
+                f => f.FileId == selectedFile.FileId);
 
             if (file != null)
             {
@@ -128,21 +164,22 @@ namespace SecureFileVault
                     UserId = _currentUser.UserId,
                     FileId = file.FileId,
                     ActionType = "Delete",
-                    Details = $"Deleted file: {file.OriginalFileName}"
+                    Details = $"Deleted file: {file.OriginalFileName}",
+                    Timestamp = DateTime.UtcNow
                 });
 
                 db.SaveChanges();
             }
 
-             LoadFiles();
+            LoadFiles();
         }
 
-            private void AuditLogsButton_Click(object sender, RoutedEventArgs e)
+        private void AuditLogsButton_Click(object sender, RoutedEventArgs e)
         {
             var logsWindow = new AuditLogsWindow();
             logsWindow.ShowDialog();
         }
-        
+
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             var loginWindow = new LoginWindow();
