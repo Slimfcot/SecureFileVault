@@ -37,7 +37,12 @@ namespace SecureFileVault.Services
                 string storedFileName = $"{Guid.NewGuid()}{extension}";
                 string destinationPath = Path.Combine(_storageFolder, storedFileName);
 
-                File.Copy(sourceFilePath, destinationPath, overwrite: false);
+               var encryptionService = new EncryptionService();
+
+                byte[] key = encryptionService.GenerateKey("demo-key"); // temp
+                byte[] iv = encryptionService.GenerateIV();
+
+                encryptionService.EncryptFile(sourceFilePath, destinationPath, key, iv);
 
                 using var db = new AppDbContext();
 
