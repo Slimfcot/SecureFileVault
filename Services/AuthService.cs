@@ -67,6 +67,16 @@ namespace SecureFileVault.Services
                 return null;
             }
 
+            db.AuditLogs.Add(new AuditLog
+            {
+                UserId = user.UserId,
+                ActionType = "Login",
+                Details = "User logged in",
+                Timestamp = DateTime.UtcNow
+            });
+
+            db.SaveChanges();
+
             message = "Login successful.";
             return user;
         }
