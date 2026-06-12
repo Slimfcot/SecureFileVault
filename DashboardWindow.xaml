@@ -97,9 +97,9 @@
                                         Binding="{Binding FileExtension}"
                                         Width="120"/>
 
-                    <DataGridTextColumn Header="Size (bytes)"
-                                        Binding="{Binding FileSize}"
-                                        Width="140"/>
+                    <DataGridTextColumn Header="Size (MB)"
+                                        Binding="{Binding FileSizeMb}"
+                                    Width="120"/>
 
                     <DataGridTextColumn Header="Uploaded At"
                                         Binding="{Binding UploadedAt}"
