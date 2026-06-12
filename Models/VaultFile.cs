@@ -35,5 +35,14 @@ namespace SecureFileVault.Models
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
         public bool IsDeleted { get; set; } = false;
-    }
+
+        [NotMapped]
+        public string FileSizeMb
+        {
+            get
+            {
+                return $"{FileSize / 1024.0 / 1024.0:F2}";
+            }
+        }
+            }
 }
